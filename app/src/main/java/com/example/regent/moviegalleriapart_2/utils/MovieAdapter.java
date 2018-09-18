@@ -71,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         Log.i(TAG, "Movie size is: " + movieResults.size());
-        return movieResults.size();
+        return movieResults == null? 0 : movieResults.size();
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder{
@@ -79,7 +79,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         private CardView cardView;
         private TextView movieName;
         private ImageView movieImage;
-        private ProgressBar progressBar;
         private Result result;
 
         public MovieViewHolder(View itemView) {
@@ -88,7 +87,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             movieName = itemView.findViewById(R.id.movie_text_view);
             movieImage = itemView.findViewById(R.id.movie_image_view);
             cardView = itemView.findViewById(R.id.card_view);
-            progressBar = itemView.findViewById(R.id.progress_bar);
         }
 
         public void bindMovieItem(Result resultItem){
@@ -137,6 +135,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public void addLoadingFooter(){
         isLoadingAdded = true;
-        add(new Result());
+//        add(new Result());
     }
 }
