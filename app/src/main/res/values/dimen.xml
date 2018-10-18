@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="detail_activity_margin">10dp</dimen>
+    <dimen name="overview_size">16sp</dimen>
+    <dimen name="text_size">20sp</dimen>
+    <dimen name="favourite_text_size">24sp</dimen>
+</resources>

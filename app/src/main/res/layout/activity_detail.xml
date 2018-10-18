@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/detail_activity_margin"
+    android:gravity="center"
+    tools:context=".DetailActivity">
+
+    <TextView
+        android:id="@+id/movie_favourite_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/favourite_text_size"
+        android:layout_marginBottom="@dimen/favourite_bottom_margin"
+        android:drawableRight="@drawable/ic_favourite"
+        android:drawableEnd="@drawable/ic_favourite"/>
+
+    <ImageView
+        android:contentDescription="@string/movie_image"
+        android:id="@+id/movie_picture_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/movie_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        tools:text="@tools:sample/lorem"/>
+
+    <TextView
+        android:id="@+id/release_date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        tools:text="@tools:sample/date/mmddyy" />
+
+    <RatingBar
+        android:id="@+id/movie_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="10"
+        android:stepSize="1.0"/>
+
+    <TextView
+        android:id="@+id/movie_overview_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/lorem/random"
+        android:textSize="@dimen/overview_size"/>
+
+    <TextView
+        android:id="@+id/movie_trailer_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/lorem"/>
+
+    <TextView
+        android:id="@+id/movie_review_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="@tools:sample/lorem"/>
+
+</LinearLayout>

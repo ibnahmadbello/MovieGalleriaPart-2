@@ -2,4 +2,5 @@
     <string name="app_name">MovieGalleriaPart-2</string>
 
     <string name="api_key">e8ee808272e37253ce9bcafad5189dd0</string>
+    <string name="movie_image">Movie Image</string>
 </resources>
