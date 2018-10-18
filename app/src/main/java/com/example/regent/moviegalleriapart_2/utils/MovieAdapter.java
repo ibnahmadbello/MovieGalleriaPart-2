@@ -30,6 +30,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
+    private RecyclerViewClickListener clickListener;
+
     private List<Result> movieResults;
     private Context context;
 
@@ -38,10 +40,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private MovieAdapterCallback movieAdapterCallback;
 
-    public MovieAdapter(Context context){
+    public MovieAdapter(Context context, List<Result> movieResults, RecyclerViewClickListener clickListener){
         this.context = context;
         this.movieAdapterCallback = (MovieAdapterCallback) context;
-        movieResults = new ArrayList<>();
+        this.clickListener = clickListener;
+        this.movieResults = movieResults;
+    }
+
+    public interface RecyclerViewClickListener{
+        void onItemClick(int clickedItemPosition);
     }
 
     public List<Result> getMovieResults(){
@@ -73,7 +80,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movieResults == null? 0 : movieResults.size();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder{
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private CardView cardView;
         private TextView movieName;
@@ -109,7 +116,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
 
-
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            clickListener.onItemClick(clickedPosition);
+            Result singleMovie = movieResults.get(clickedPosition);
+            Log.i(TAG, singleMovie.toString());
+        }
     }
 
     private DrawableRequestBuilder<String> loadImage(@NonNull String posterPath){

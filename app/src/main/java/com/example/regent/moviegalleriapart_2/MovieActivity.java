@@ -1,5 +1,6 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,15 +16,18 @@ import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapter;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapterCallback;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieActivity extends AppCompatActivity implements MovieAdapterCallback{
+public class MovieActivity extends AppCompatActivity implements MovieAdapterCallback, MovieAdapter.RecyclerViewClickListener{
 
     private static final String TAG = MovieActivity.class.getSimpleName();
+    public static String EXTRA = "Movie_Extra";
 
     private static final int PAGE_START = 1;
 
@@ -37,6 +41,8 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
     RecyclerView recyclerView;
     ProgressBar progressBar;
 
+    private List<Result> movieItems = new ArrayList<>();
+
     private MovieService movieService;
 
 
@@ -47,7 +53,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
         recyclerView = findViewById(R.id.recycler_view);
 
-        movieAdapter = new MovieAdapter(this);
+        movieAdapter = new MovieAdapter(this, new ArrayList<Result>(), this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
@@ -101,5 +107,13 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
     @Override
     public void retryPageLoad() {
 
+    }
+
+    @Override
+    public void onItemClick(int clickedItemPosition) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        Result testMovie = movieItems.get(clickedItemPosition);
+        intent.putExtra(EXTRA, (Serializable) testMovie);
+        startActivity(intent);
     }
 }
