@@ -13,6 +13,7 @@ import com.example.regent.moviegalleriapart_2.model.TopRatedMovies;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapter;
+import com.example.regent.moviegalleriapart_2.utils.MovieAdapterCallback;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieActivity extends AppCompatActivity {
+public class MovieActivity extends AppCompatActivity implements MovieAdapterCallback{
 
     private static final String TAG = MovieActivity.class.getSimpleName();
 
@@ -56,6 +57,8 @@ public class MovieActivity extends AppCompatActivity {
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
         loadFirstPage();
+
+
     }
 
     private void loadFirstPage(){
@@ -93,5 +96,10 @@ public class MovieActivity extends AppCompatActivity {
     private List<Result> fetchResults(Response<TopRatedMovies> topRatedMoviesResponse){
         TopRatedMovies topRatedMovies = topRatedMoviesResponse.body();
         return topRatedMovies.getResults();
+    }
+
+    @Override
+    public void retryPageLoad() {
+
     }
 }
