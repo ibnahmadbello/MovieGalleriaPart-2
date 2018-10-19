@@ -1,11 +1,12 @@
 
 package com.example.regent.moviegalleriapart_2.model;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class Result implements Serializable{
 
     @SerializedName("vote_count")
     @Expose

@@ -13,6 +13,7 @@
         android:id="@+id/movie_favourite_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/add_to_favourite"
         android:textSize="@dimen/favourite_text_size"
         android:layout_marginBottom="@dimen/favourite_bottom_margin"
         android:drawableRight="@drawable/ic_favourite"

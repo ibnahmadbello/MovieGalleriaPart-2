@@ -93,6 +93,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             movieName = itemView.findViewById(R.id.movie_text_view);
             movieImage = itemView.findViewById(R.id.movie_image_view);
             cardView = itemView.findViewById(R.id.card_view);
+            itemView.setOnClickListener(this);
         }
 
         public void bindMovieItem(Result resultItem){

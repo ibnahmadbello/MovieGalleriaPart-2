@@ -113,7 +113,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
     public void onItemClick(int clickedItemPosition) {
         Intent intent = new Intent(this, DetailActivity.class);
         Result testMovie = movieItems.get(clickedItemPosition);
-        intent.putExtra(EXTRA, (Serializable) testMovie);
+        intent.putExtra(EXTRA, testMovie);
         startActivity(intent);
     }
 }
