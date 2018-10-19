@@ -54,7 +54,8 @@ public class DetailActivity extends AppCompatActivity {
                 .load(IMAGE_BASE_URL + result.getPosterPath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
-                .crossFade();
+                .crossFade()
+                .into(movieImage);
 
     }
 }
