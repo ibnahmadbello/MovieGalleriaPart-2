@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_margin="@dimen/detail_activity_margin"
-    android:gravity="center"
+    android:gravity="top|center"
     tools:context=".DetailActivity">
 
     <TextView
