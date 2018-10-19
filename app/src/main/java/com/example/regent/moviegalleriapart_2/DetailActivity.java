@@ -41,6 +41,8 @@ public class DetailActivity extends AppCompatActivity {
         movieReleaseDate.setText(result.getReleaseDate());
         numberRating = result.getPopularity();
         movieRating.setRating((float) numberRating);
+        movieRating.setIsIndicator(true);
+        movieRating.setStepSize(0.5f);
 
     }
 }
