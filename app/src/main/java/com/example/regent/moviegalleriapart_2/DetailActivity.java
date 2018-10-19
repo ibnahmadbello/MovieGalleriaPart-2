@@ -6,12 +6,16 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.regent.moviegalleriapart_2.model.Result;
 
 public class DetailActivity extends AppCompatActivity {
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String EXTRA_POSITION = "extra_movie";
+
+    private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
     private RatingBar movieRating;
     private ImageView movieImage;
@@ -42,8 +46,15 @@ public class DetailActivity extends AppCompatActivity {
         numberRating = result.getPopularity();
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(0.5f);
+        movieRating.setStepSize(1.0f);
         movieRating.setMax(10);
+        movieRating.setNumStars(10);
+
+        Glide.with(this)
+                .load(IMAGE_BASE_URL + result.getPosterPath())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .centerCrop()
+                .crossFade();
 
     }
 }
