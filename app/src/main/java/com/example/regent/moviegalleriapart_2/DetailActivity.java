@@ -43,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
         movieRating.setStepSize(0.5f);
+        movieRating.setMax(10);
 
     }
 }
