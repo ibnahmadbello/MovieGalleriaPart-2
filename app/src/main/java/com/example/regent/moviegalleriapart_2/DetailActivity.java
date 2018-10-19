@@ -55,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
                 .crossFade()
+                .override(250, 250)
                 .into(movieImage);
 
     }
