@@ -96,8 +96,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call<Review> call, Response<Review> response) {
                 List<com.example.regent.moviegalleriapart_2.model.Review.Result> results = fetchResults(response);
-                String url = results.toString();
-                Log.i(TAG, url);
+                for (com.example.regent.moviegalleriapart_2.model.Review.Result str : results){
+                    Log.e(TAG, String.valueOf(str));
+                }
+//                Log.i(TAG, url);
             }
 
             @Override
@@ -118,6 +120,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private List<com.example.regent.moviegalleriapart_2.model.Review.Result> fetchResults(Response<Review> reviewResponse){
         Review review = reviewResponse.body();
+        Log.i(TAG, review.getResults().toString());
         return review.getResults();
     }
 }

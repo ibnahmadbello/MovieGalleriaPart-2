@@ -27,7 +27,7 @@ public interface MovieService {
 
     @GET("movie/{movie_id}/reviews")
     Call<Review> getReview(
-            @Path("{movie_id}") int movie_id,
+            @Path("movie_id") int movie_id,
             @Query("api_key") String apiKey,
             @Query("language") String language,
             @Query("page") int pageIndex
