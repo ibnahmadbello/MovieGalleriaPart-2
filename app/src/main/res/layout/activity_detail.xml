@@ -65,6 +65,9 @@
         android:id="@+id/movie_review_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/review_link"
+        android:autoLink="all"
+        android:clickable="true"
         tools:text="@tools:sample/lorem"/>
 
 </LinearLayout>
