@@ -53,7 +53,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
         recyclerView = findViewById(R.id.recycler_view);
 
-        movieAdapter = new MovieAdapter(this, new ArrayList<Result>(), this);
+        movieAdapter = new MovieAdapter(this, movieItems, this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
