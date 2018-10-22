@@ -3,6 +3,8 @@ package com.example.regent.moviegalleriapart_2;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.Review.Review;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
+import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class DetailActivity extends AppCompatActivity implements View.OnClickListener, VideoAdapter.RecyclerViewClickListener{
 
     private static final String TAG = DetailActivity.class.getSimpleName();
     public static final String EXTRA_POSITION = "extra_movie";
@@ -38,6 +41,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private double numberRating;
     String url;
     List<com.example.regent.moviegalleriapart_2.model.Review.Result> mResultList = new ArrayList<>();
+
+    private RecyclerView recyclerView;
+    private VideoAdapter videoAdapter;
+    private List<com.example.regent.moviegalleriapart_2.model.Video.Result> resultList = new ArrayList<>();
 
     private MovieService movieService;
 
@@ -53,6 +60,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         movieOverview = findViewById(R.id.movie_overview_text_view);
         movieFavourite = findViewById(R.id.movie_favourite_text_view);
         movieReview = findViewById(R.id.movie_review_text_view);
+        recyclerView = findViewById(R.id.video_recycler_view);
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
 
@@ -60,6 +68,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         movieReview.setOnClickListener(this);
 
         result = (Result) getIntent().getSerializableExtra(MovieActivity.EXTRA);
+
+        videoAdapter = new VideoAdapter(this, resultList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(videoAdapter);
 
         setupMovie();
     }
@@ -107,13 +120,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 Log.i(TAG, "The size is: " + mResultList.size());
                 getUrl();
-
-//                response.body(); // Get entire data
-
-//                String url = fetchResults(response);
-//                String url = response.body().getUrl();
-//
-//                Log.i(TAG, "The url is: " + response.body());
             }
 
             @Override
@@ -146,5 +152,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Intent intent = new Intent(this, ReviewActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, url);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void onItemClicked(int clickedItemPosition) {
+
     }
 }
