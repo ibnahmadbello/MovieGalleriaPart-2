@@ -76,6 +76,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         recyclerView.setAdapter(videoAdapter);
 
         setupMovie();
+
+        handleVideoView();
     }
 
     private void setupMovie(){
