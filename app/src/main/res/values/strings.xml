@@ -5,7 +5,6 @@
     <string name="movie_image">Movie Image</string>
     <string name="add_to_favourite">Add to Favourite</string>
     <string name="review_link">Click on this link to read Movie Review</string>
-    <string name="appbar_scrolling_view_behavior">Scrolling</string>
     <string name="bookmark">Bookmark</string>
     <string name="action_back">Back</string>
     <string name="action_forward">Forward</string>
