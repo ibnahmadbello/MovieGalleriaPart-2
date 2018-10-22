@@ -92,12 +92,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         callMovieReview().enqueue(new Callback<com.example.regent.moviegalleriapart_2.model.Review.Result>() {
             @Override
             public void onResponse(Call<com.example.regent.moviegalleriapart_2.model.Review.Result> call, Response<com.example.regent.moviegalleriapart_2.model.Review.Result> response) {
-                response.body(); // Get entire data
+//                response.body(); // Get entire data
 
-                String url = fetchResults(response);
-//                String url = response.body().getUrl();
+//                String url = fetchResults(response);
+                String url = response.body().getUrl();
 
-                Log.i(TAG, url);
+                Log.i(TAG, "The url is: " + response.body());
             }
 
             @Override
