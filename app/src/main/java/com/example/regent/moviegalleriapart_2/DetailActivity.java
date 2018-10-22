@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.Review.Review;
+import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
@@ -154,6 +155,33 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
     }
 
+    private void handleVideoView(){
+        callVideoApi().enqueue(new Callback<Video>() {
+            @Override
+            public void onResponse(Call<Video> call, Response<Video> response) {
+                List<com.example.regent.moviegalleriapart_2.model.Video.Result> results = fetchVideos(response);
+                for (com.example.regent.moviegalleriapart_2.model.Video.Result result1 : results){
+                    resultList.add(result1);
+                }
+                Log.i(TAG, "The size is: " + resultList.size());
+            }
+
+            @Override
+            public void onFailure(Call<Video> call, Throwable t) {
+                Log.d(TAG, "Error message is: " + t.getMessage());
+            }
+        });
+    }
+
+    private Call<Video> callVideoApi(){
+        int movie_id = result.getId();
+        return movieService.getVideo(movie_id, getString(R.string.api_key), "en_US", 1);
+    }
+
+    private List<com.example.regent.moviegalleriapart_2.model.Video.Result> fetchVideos(Response<Video> videoResponse){
+        Video video = videoResponse.body();
+        return video.getResults();
+    }
 
     @Override
     public void onItemClicked(int clickedItemPosition) {
