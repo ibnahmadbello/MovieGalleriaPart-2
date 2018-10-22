@@ -1,7 +1,7 @@
 package com.example.regent.moviegalleriapart_2.presenter;
 
 import com.example.regent.moviegalleriapart_2.model.Popular;
-import com.example.regent.moviegalleriapart_2.model.Review.Review;
+import com.example.regent.moviegalleriapart_2.model.Review.Result;
 import com.example.regent.moviegalleriapart_2.model.TopRatedMovies;
 
 import retrofit2.Call;
@@ -26,7 +26,7 @@ public interface MovieService {
     );
 
     @GET("movie/{movie_id}/reviews")
-    Call<Review> getReview(
+    Call<Result> getReview(
             @Path("movie_id") int movie_id,
             @Query("api_key") String apiKey,
             @Query("language") String language,

@@ -11,11 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.regent.moviegalleriapart_2.model.Result;
-import com.example.regent.moviegalleriapart_2.model.Review.Review;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,18 +89,19 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void handleReview(){
-        callMovieReview().enqueue(new Callback<Review>() {
+        callMovieReview().enqueue(new Callback<com.example.regent.moviegalleriapart_2.model.Review.Result>() {
             @Override
-            public void onResponse(Call<Review> call, Response<Review> response) {
-                List<com.example.regent.moviegalleriapart_2.model.Review.Result> results = fetchResults(response);
-                for (com.example.regent.moviegalleriapart_2.model.Review.Result str : results){
-                    Log.e(TAG, String.valueOf(str));
-                }
-//                Log.i(TAG, url);
+            public void onResponse(Call<com.example.regent.moviegalleriapart_2.model.Review.Result> call, Response<com.example.regent.moviegalleriapart_2.model.Review.Result> response) {
+                response.body(); // Get entire data
+
+                String url = fetchResults(response);
+//                String url = response.body().getUrl();
+
+                Log.i(TAG, url);
             }
 
             @Override
-            public void onFailure(Call<Review> call, Throwable t) {
+            public void onFailure(Call<com.example.regent.moviegalleriapart_2.model.Review.Result> call, Throwable t) {
                 Log.d(TAG, "Error message is: " + t.getMessage());
             }
         });
@@ -112,15 +110,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * Performs a Retrofit call to the Review link
      */
-    private Call<Review> callMovieReview(){
+    private Call<com.example.regent.moviegalleriapart_2.model.Review.Result> callMovieReview(){
         int movie_id = result.getId();
         String review = "reviews";
         return movieService.getReview(movie_id, getString(R.string.api_key), "en_US", 1);
     }
 
-    private List<com.example.regent.moviegalleriapart_2.model.Review.Result> fetchResults(Response<Review> reviewResponse){
-        Review review = reviewResponse.body();
-        Log.i(TAG, review.getResults().toString());
-        return review.getResults();
+    private String fetchResults(Response<com.example.regent.moviegalleriapart_2.model.Review.Result> reviewResponse){
+        com.example.regent.moviegalleriapart_2.model.Review.Result review = reviewResponse.body();
+//        Log.i(TAG, review.getResults().toString());
+        return review.getUrl();
     }
 }
