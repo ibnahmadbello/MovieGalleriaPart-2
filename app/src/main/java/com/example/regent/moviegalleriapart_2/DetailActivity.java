@@ -1,5 +1,6 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,12 +8,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.regent.moviegalleriapart_2.model.Result;
+import com.example.regent.moviegalleriapart_2.model.Review.Review;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +36,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private TextView movieReleaseDate, movieTitle, movieOverview, movieFavourite, movieReview;
     Result result;
     private double numberRating;
+    String url;
+    List<com.example.regent.moviegalleriapart_2.model.Review.Result> mResultList = new ArrayList<>();
 
     private MovieService movieService;
 
@@ -63,9 +71,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         numberRating = result.getPopularity();
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(1.0f);
+        movieRating.setStepSize(1.5f);
         movieRating.setMax(10);
-        movieRating.setNumStars(10);
+        movieRating.setNumStars(5);
 
         Glide.with(this)
                 .load(IMAGE_BASE_URL + result.getPosterPath())
@@ -89,19 +97,27 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void handleReview(){
-        callMovieReview().enqueue(new Callback<com.example.regent.moviegalleriapart_2.model.Review.Result>() {
+        callMovieReview().enqueue(new Callback<Review>() {
             @Override
-            public void onResponse(Call<com.example.regent.moviegalleriapart_2.model.Review.Result> call, Response<com.example.regent.moviegalleriapart_2.model.Review.Result> response) {
+            public void onResponse(Call<Review> call, Response<Review> response) {
+
+                List<com.example.regent.moviegalleriapart_2.model.Review.Result> results = fetchResults(response);
+                for (com.example.regent.moviegalleriapart_2.model.Review.Result result1 : results){
+                    mResultList.add(result1);
+                }
+                Log.i(TAG, "The size is: " + mResultList.size());
+                getUrl();
+
 //                response.body(); // Get entire data
 
 //                String url = fetchResults(response);
-                String url = response.body().getUrl();
-
-                Log.i(TAG, "The url is: " + response.body());
+//                String url = response.body().getUrl();
+//
+//                Log.i(TAG, "The url is: " + response.body());
             }
 
             @Override
-            public void onFailure(Call<com.example.regent.moviegalleriapart_2.model.Review.Result> call, Throwable t) {
+            public void onFailure(Call<Review> call, Throwable t) {
                 Log.d(TAG, "Error message is: " + t.getMessage());
             }
         });
@@ -110,15 +126,25 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * Performs a Retrofit call to the Review link
      */
-    private Call<com.example.regent.moviegalleriapart_2.model.Review.Result> callMovieReview(){
+    private Call<Review> callMovieReview(){
         int movie_id = result.getId();
-        String review = "reviews";
         return movieService.getReview(movie_id, getString(R.string.api_key), "en_US", 1);
     }
 
-    private String fetchResults(Response<com.example.regent.moviegalleriapart_2.model.Review.Result> reviewResponse){
-        com.example.regent.moviegalleriapart_2.model.Review.Result review = reviewResponse.body();
+    private List<com.example.regent.moviegalleriapart_2.model.Review.Result> fetchResults(Response<Review> reviewResponse){
+        Review review = reviewResponse.body();
 //        Log.i(TAG, review.getResults().toString());
-        return review.getUrl();
+        return review.getResults();
+    }
+
+    private void getUrl(){
+        for (com.example.regent.moviegalleriapart_2.model.Review.Result result : mResultList){
+            url = result.getUrl();
+        }
+        Log.i(TAG, url);
+        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, ReviewActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(intent);
     }
 }
