@@ -77,7 +77,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         setupMovie();
 
-        handleVideoView();
     }
 
     private void setupMovie(){
@@ -99,6 +98,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 .override(500, 500)
                 .into(movieImage);
 
+        handleVideoView();
     }
 
     @Override
