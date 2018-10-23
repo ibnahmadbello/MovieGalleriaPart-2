@@ -70,13 +70,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
         result = (Result) getIntent().getSerializableExtra(MovieActivity.EXTRA);
 
-        videoAdapter = new VideoAdapter(this, resultList, this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(videoAdapter);
+
 
         setupMovie();
 
+        handleVideoView();
+
+        setupVideoRecyclerView();
     }
 
     private void setupMovie(){
@@ -86,7 +86,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         numberRating = result.getPopularity();
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(1.5f);
+        movieRating.setStepSize(0.5f);
         movieRating.setMax(10);
         movieRating.setNumStars(5);
 
@@ -98,7 +98,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 .override(500, 500)
                 .into(movieImage);
 
-        handleVideoView();
+
     }
 
     @Override
@@ -177,12 +177,20 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private Call<Video> callVideoApi(){
         int movie_id = result.getId();
+        Log.i(TAG, "The movie_id is: " + movie_id);
         return movieService.getVideo(movie_id, getString(R.string.api_key), "en_US", 1);
     }
 
     private List<com.example.regent.moviegalleriapart_2.model.Video.Result> fetchVideos(Response<Video> videoResponse){
         Video video = videoResponse.body();
         return video.getResults();
+    }
+
+    private void setupVideoRecyclerView(){
+        videoAdapter = new VideoAdapter(this, resultList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(videoAdapter);
     }
 
     @Override

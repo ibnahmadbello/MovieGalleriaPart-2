@@ -41,7 +41,6 @@ public class ReviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
@@ -90,12 +89,15 @@ public class ReviewActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 invalidateOptionsMenu();
             }
+
+
         });
 
         webView.clearCache(true);
         webView.clearHistory();
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setHorizontalScrollBarEnabled(false);
+        webView.setInitialScale(1);
+        webView.setHorizontalScrollBarEnabled(true);
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -172,7 +174,7 @@ public class ReviewActivity extends AppCompatActivity {
 
             String msg = Utils.isBookmarked(this, webView.getUrl()) ?
                     webView.getTitle() + "is Bookmarked" : webView.getTitle() + "is removed!";
-            Snackbar snackbar = android.support.design.widget.Snackbar.make(coordinatorLayout, msg, Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, msg, Snackbar.LENGTH_LONG);
             snackbar.show();
 
             // refresh the toolbar icons, so that bookmark icon color changes

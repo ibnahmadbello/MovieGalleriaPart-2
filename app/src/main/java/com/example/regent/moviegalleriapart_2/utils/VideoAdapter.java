@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.regent.moviegalleriapart_2.R;
@@ -60,7 +61,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private VideoView videoView;
+        private TextView videoView;
         private Result result;
 
         public VideoViewHolder(View itemView){
@@ -73,7 +74,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             result = resultItem;
             String key = result.getKey();
             Uri uri = Uri.parse(BASE_VIDEO_URL + key);
-            videoView.setVideoURI(uri);
+            videoView.setText(key);
         }
 
 
