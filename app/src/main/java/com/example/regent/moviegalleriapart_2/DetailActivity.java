@@ -1,6 +1,7 @@
 package com.example.regent.moviegalleriapart_2;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,8 @@ import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
+import com.google.android.youtube.player.YouTubeApiServiceUtil;
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailView;
 
@@ -201,7 +204,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onItemClicked(int clickedItemPosition) {
         com.example.regent.moviegalleriapart_2.model.Video.Result singleVideo = resultList.get(clickedItemPosition);
-        Intent intent = YouTubeStandalonePlayer.createVideoIntent(this, API_KEY, singleVideo.getKey());
-        startActivity(intent);
+        if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(this).equals(YouTubeInitializationResult.SUCCESS)){
+            Intent intent = YouTubeStandalonePlayer.createVideoIntent(this, API_KEY, singleVideo.getKey());
+            startActivity(intent);
+        } else {
+            Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + singleVideo.getKey()));
+            startActivity(webIntent);
+        }
+
     }
 }

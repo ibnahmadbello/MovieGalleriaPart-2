@@ -1,5 +1,6 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -60,6 +61,7 @@ public class ReviewActivity extends AppCompatActivity {
         webView.loadUrl(url);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initWebView(){
         webView.setWebChromeClient(new MyWebChromeClient(this));
         webView.setWebViewClient(new WebViewClient(){
@@ -121,6 +123,7 @@ public class ReviewActivity extends AppCompatActivity {
                 }
                 return false;
             }
+
         });
 
     }
