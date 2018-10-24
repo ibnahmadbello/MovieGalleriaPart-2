@@ -61,7 +61,6 @@ public class ReviewActivity extends AppCompatActivity {
         webView.loadUrl(url);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private void initWebView(){
         webView.setWebChromeClient(new MyWebChromeClient(this));
         webView.setWebViewClient(new WebViewClient(){

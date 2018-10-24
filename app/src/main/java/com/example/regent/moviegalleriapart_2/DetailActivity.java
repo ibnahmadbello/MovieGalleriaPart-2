@@ -107,7 +107,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 .override(500, 500)
                 .into(movieImage);
 
-
+        setTitle(result.getTitle());
     }
 
     @Override
