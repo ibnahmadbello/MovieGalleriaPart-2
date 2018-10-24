@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,8 @@ import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Result result;
     private double numberRating;
     String url;
+    private static final String API_KEY = "AIzaSyD3PQDsgq6CicCEfMV59RjEJgMOxnZyQ4o";
+
     List<com.example.regent.moviegalleriapart_2.model.Review.Result> mResultList = new ArrayList<>();
 
     private RecyclerView recyclerView;
@@ -83,10 +88,11 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         movieOverview.setText(result.getOverview());
         movieTitle.setText(result.getTitle());
         movieReleaseDate.setText(result.getReleaseDate());
-        numberRating = result.getPopularity();
+        numberRating = result.getVoteAverage();
+        Log.i(TAG, "popularity " + numberRating);
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(0.5f);
+        movieRating.setStepSize(1);
         movieRating.setMax(10);
         movieRating.setNumStars(5);
 
@@ -162,9 +168,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call<Video> call, Response<Video> response) {
                 List<com.example.regent.moviegalleriapart_2.model.Video.Result> results = fetchVideos(response);
-                for (com.example.regent.moviegalleriapart_2.model.Video.Result result1 : results){
-                    resultList.add(result1);
-                }
+                resultList.addAll(results);
+                videoAdapter.notifyDataSetChanged();
                 Log.i(TAG, "The size is: " + resultList.size());
             }
 
@@ -195,6 +200,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onItemClicked(int clickedItemPosition) {
-
+        com.example.regent.moviegalleriapart_2.model.Video.Result singleVideo = resultList.get(clickedItemPosition);
+        Intent intent = YouTubeStandalonePlayer.createVideoIntent(this, API_KEY, singleVideo.getKey());
+        startActivity(intent);
     }
 }

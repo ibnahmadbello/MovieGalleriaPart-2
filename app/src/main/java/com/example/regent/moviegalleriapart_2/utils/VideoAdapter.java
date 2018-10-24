@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.example.regent.moviegalleriapart_2.R;
 import com.example.regent.moviegalleriapart_2.model.Video.Result;
+import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.squareup.picasso.Picasso;
 
 import java.net.URI;
 import java.util.List;
@@ -61,20 +64,30 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
     class VideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView videoView;
+        private ImageView thumbnailImageView, playImageView;
+//        private TextView videoView;
         private Result result;
 
         public VideoViewHolder(View itemView){
             super(itemView);
-            videoView = itemView.findViewById(R.id.video_view);
+//            videoView = itemView.findViewById(R.id.youtube_player_view);
+            thumbnailImageView = itemView.findViewById(R.id.image_thumbnail);
+            playImageView = itemView.findViewById(R.id.iv_play_pause);
+//            mYouTubeThumbnailView = itemView.findViewById(R.id.youtube_player_view);
             itemView.setOnClickListener(this);
         }
 
         public void bindVideoItem(Result resultItem){
             result = resultItem;
-            String key = result.getKey();
-            Uri uri = Uri.parse(BASE_VIDEO_URL + key);
-            videoView.setText(key);
+//            String key = result.getKey();
+//            Uri uri = Uri.parse(BASE_VIDEO_URL + key);
+//            videoView.setText(result.getKey());
+//            mYouTubeThumbnailView.setTag(result);
+            String img_url = "http://img.youtube.com/vi/" + result.getKey() + "/0.jpg";
+            Picasso.with(context)
+                    .load(img_url)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(thumbnailImageView);
         }
 
 
