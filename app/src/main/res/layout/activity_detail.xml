@@ -72,6 +72,9 @@
         android:layout_height="wrap_content"
         android:text="@string/review_link"
         android:autoLink="all"
+        android:textSize="@dimen/favourite_text_size"
+        android:textAppearance="?android:titleTextAppearance"
+        android:gravity="center"
         android:clickable="true"
         tools:text="@tools:sample/lorem"/>
 

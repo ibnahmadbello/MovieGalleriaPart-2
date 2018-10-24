@@ -8,4 +8,7 @@
     <string name="bookmark">Bookmark</string>
     <string name="action_back">Back</string>
     <string name="action_forward">Forward</string>
+    <string name="most_popular">Popular Movie</string>
+    <string name="top_rated">Top Rated Movie</string>
+    <string name="show_favourite">Show Favourite Movie</string>
 </resources>

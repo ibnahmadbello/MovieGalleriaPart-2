@@ -130,9 +130,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return Glide
                 .with(context)
                 .load(IMAGE_BASE_URL + posterPath)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
-                .crossFade();
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
     }
 
     public void add(Result result){

@@ -6,15 +6,20 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.example.regent.moviegalleriapart_2.model.Popular;
 import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.TopRatedMovies;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapter;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapterCallback;
+import com.example.regent.moviegalleriapart_2.utils.QueryPreferences;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,7 +74,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
     private void loadFirstPage(){
         Log.i(TAG, "loadFirstPage: ");
-
+        QueryPreferences.setStoredQuery(this, "top_rated");
         callTopRatedMoviesApi().enqueue(new Callback<TopRatedMovies>() {
             @Override
             public void onResponse(Call<TopRatedMovies> call, Response<TopRatedMovies> response) {
@@ -77,7 +82,10 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
                 List<Result> results = fetchResults(response);
                 progressBar.setVisibility(View.GONE);
+                movieItems.clear();
                 movieAdapter.addAll(results);
+                movieAdapter.notifyDataSetChanged();
+                setTitle(getString(R.string.top_rated));
 
                 if (currentPage <= TOTAL_PAGE) movieAdapter.addLoadingFooter();
                 else isLastPage = true;
@@ -115,5 +123,69 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
         Result testMovie = movieItems.get(clickedItemPosition);
         intent.putExtra(EXTRA, testMovie);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.movie_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_popular_movie:
+                String popular_query = "popular";
+                if (QueryPreferences.getStoredQuery(this).equals(popular_query)){
+                    Toast.makeText(this, "Already showing Popular Movies.", Toast.LENGTH_SHORT).show();
+                } else {
+                    loadPopularMovie();
+                }
+                break;
+            case R.id.action_top_rated_movie:
+                String top_rated_query = "top_rated";
+                if (QueryPreferences.getStoredQuery(this).equals(top_rated_query)){
+                    Toast.makeText(this, "Already showing Top Rated Movies.", Toast.LENGTH_SHORT).show();
+                } else {
+                    loadFirstPage();
+                }
+                break;
+            case R.id.action_show_favourite:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Performs a Retrofit call to the popular movies API.
+     * @return
+     */
+    private Call<Popular> callPopularMoviesApi(){
+        return movieService.getPopularMovies(getString(R.string.api_key), "en_US", currentPage);
+    }
+
+    private List<Result> fetchPopular(Response<Popular> popularResponse){
+        Popular popularMovies = popularResponse.body();
+        return popularMovies.getResults();
+    }
+
+    private void loadPopularMovie() {
+        QueryPreferences.setStoredQuery(this, "popular");
+        callPopularMoviesApi().enqueue(new Callback<Popular>() {
+            @Override
+            public void onResponse(Call<Popular> call, Response<Popular> response) {
+                List<Result> popularResult = fetchPopular(response);
+                progressBar.setVisibility(View.GONE);
+                movieItems.clear();
+                movieAdapter.addAll(popularResult);
+                movieAdapter.notifyDataSetChanged();
+                setTitle(getString(R.string.most_popular));
+            }
+
+            @Override
+            public void onFailure(Call<Popular> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
 }
