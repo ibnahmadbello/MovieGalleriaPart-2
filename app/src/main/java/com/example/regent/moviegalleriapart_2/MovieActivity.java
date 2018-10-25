@@ -151,6 +151,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
                 }
                 break;
             case R.id.action_show_favourite:
+                startActivity(new Intent(this, FavouritesActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

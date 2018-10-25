@@ -102,7 +102,6 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Glide.with(this)
                 .load(IMAGE_BASE_URL + result.getPosterPath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
                 .crossFade()
                 .override(500, 500)
                 .into(movieImage);

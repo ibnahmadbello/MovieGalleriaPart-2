@@ -21,7 +21,8 @@
         <activity
             android:name=".DetailActivity"
             android:parentActivityName=".MovieActivity" />
-        <activity android:name=".ReviewActivity"></activity>
+        <activity android:name=".ReviewActivity" />
+        <activity android:name=".FavouritesActivity"></activity>
     </application>
 
 </manifest>
