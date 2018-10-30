@@ -113,6 +113,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.movie_favourite_text_view:
+                boolean initialState = movieFavourite.isSelected();
+                movieFavourite.setSelected(!initialState);
                 break;
             case R.id.movie_review_text_view:
                 handleReview();

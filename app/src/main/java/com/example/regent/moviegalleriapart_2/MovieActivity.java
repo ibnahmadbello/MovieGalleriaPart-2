@@ -1,6 +1,10 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,9 +21,12 @@ import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.TopRatedMovies;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
+import com.example.regent.moviegalleriapart_2.utils.AppDatabase;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapter;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapterCallback;
+import com.example.regent.moviegalleriapart_2.utils.PageScrollListener;
 import com.example.regent.moviegalleriapart_2.utils.QueryPreferences;
+import com.example.regent.moviegalleriapart_2.utils.viewModel.MainViewModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,6 +57,8 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
     private MovieService movieService;
 
+    private AppDatabase mAppDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +71,43 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
+        recyclerView.addOnScrollListener(new PageScrollListener(layoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                isLoading = true;
+                currentPage += 1;
+
+                if (QueryPreferences.getStoredQuery(MovieActivity.this).equals("top_rated")){
+                    loadNextPage();
+                } else if (QueryPreferences.getStoredQuery(MovieActivity.this).equals("popular")){
+                    loadNextPopularPage();
+                }
+
+                /*// mocking network delay for API call
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadNextPage();
+                    }
+                }, 1000);*/
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return TOTAL_PAGE;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return isLastPage;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+        });
+
 
         progressBar = findViewById(R.id.progress_bar);
 
@@ -69,8 +115,21 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
         loadFirstPage();
 
+        /*mAppDatabase = AppDatabase.getInstance(getApplicationContext());
+        setupViewModel();*/
 
     }
+
+    /*private void setupViewModel(){
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getMovieResult().observe(this, new Observer<List<Result>>() {
+            @Override
+            public void onChanged(@Nullable List<Result> results) {
+                Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
+                movieAdapter.setMovieResults(results);
+            }
+        });
+    }*/
 
     private void loadFirstPage(){
         Log.i(TAG, "loadFirstPage: ");
@@ -82,9 +141,11 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
                 List<Result> results = fetchResults(response);
                 progressBar.setVisibility(View.GONE);
-                movieItems.clear();
+//                movieItems.clear();
+                movieAdapter.clear();
                 movieAdapter.addAll(results);
-                movieAdapter.notifyDataSetChanged();
+//                movieAdapter.notifyDataSetChanged();
+
                 setTitle(getString(R.string.top_rated));
 
                 if (currentPage <= TOTAL_PAGE) movieAdapter.addLoadingFooter();
@@ -139,6 +200,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
                 if (QueryPreferences.getStoredQuery(this).equals(popular_query)){
                     Toast.makeText(this, "Already showing Popular Movies.", Toast.LENGTH_SHORT).show();
                 } else {
+                    currentPage = 1;
                     loadPopularMovie();
                 }
                 break;
@@ -147,6 +209,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
                 if (QueryPreferences.getStoredQuery(this).equals(top_rated_query)){
                     Toast.makeText(this, "Already showing Top Rated Movies.", Toast.LENGTH_SHORT).show();
                 } else {
+                    currentPage = 1;
                     loadFirstPage();
                 }
                 break;
@@ -177,10 +240,69 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
             public void onResponse(Call<Popular> call, Response<Popular> response) {
                 List<Result> popularResult = fetchPopular(response);
                 progressBar.setVisibility(View.GONE);
-                movieItems.clear();
+//                movieItems.clear();
+                movieAdapter.clear();
                 movieAdapter.addAll(popularResult);
-                movieAdapter.notifyDataSetChanged();
+//                movieAdapter.notifyDataSetChanged();
                 setTitle(getString(R.string.most_popular));
+
+                if (currentPage <= TOTAL_PAGE) movieAdapter.addLoadingFooter();
+                else isLastPage = true;
+            }
+
+            @Override
+            public void onFailure(Call<Popular> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void loadNextPage(){
+        Log.i(TAG, "loadFirstPage: ");
+        QueryPreferences.setStoredQuery(this, "top_rated");
+        callTopRatedMoviesApi().enqueue(new Callback<TopRatedMovies>() {
+            @Override
+            public void onResponse(Call<TopRatedMovies> call, Response<TopRatedMovies> response) {
+                // Got data here, send to adapter
+
+                movieAdapter.removeLoadingFooter();
+                isLoading = false;
+
+                List<Result> results = fetchResults(response);
+                progressBar.setVisibility(View.GONE);
+                movieAdapter.addAll(results);
+
+                setTitle(getString(R.string.top_rated));
+
+                if (currentPage <= TOTAL_PAGE) movieAdapter.addLoadingFooter();
+                else isLastPage = true;
+            }
+
+            @Override
+            public void onFailure(Call<TopRatedMovies> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void loadNextPopularPage() {
+        QueryPreferences.setStoredQuery(this, "popular");
+        callPopularMoviesApi().enqueue(new Callback<Popular>() {
+            @Override
+            public void onResponse(Call<Popular> call, Response<Popular> response) {
+
+                movieAdapter.removeLoadingFooter();
+                isLoading = false;
+                List<Result> popularResult = fetchPopular(response);
+                progressBar.setVisibility(View.GONE);
+//                movieItems.clear();
+//                movieAdapter.clear();
+                movieAdapter.addAll(popularResult);
+//                movieAdapter.notifyDataSetChanged();
+                setTitle(getString(R.string.most_popular));
+
+                if (currentPage <= TOTAL_PAGE) movieAdapter.addLoadingFooter();
+                else isLastPage = true;
             }
 
             @Override

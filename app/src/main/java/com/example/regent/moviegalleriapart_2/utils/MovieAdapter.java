@@ -24,10 +24,12 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final String TAG = MovieAdapter.class.getSimpleName();
 
+    private static final int ITEM = 0;
+    private static final int LOADING = 1;
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
     private RecyclerViewClickListener clickListener;
@@ -61,23 +63,56 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.movie_item, parent, false);
-        Log.i(TAG, "View is created");
-        return new MovieViewHolder(view);
+        switch (viewType){
+            case ITEM:
+                viewHolder = getViewHolder(parent, layoutInflater);
+                break;
+            case LOADING:
+                View view = layoutInflater.inflate(R.layout.item_progress, parent, false);
+                viewHolder = new LoadingViewHolder(view);
+                Log.i(TAG, "View is created");
+                break;
+        }
+
+        return viewHolder;
+    }
+
+    @NonNull
+    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent, LayoutInflater inflater){
+        RecyclerView.ViewHolder viewHolder;
+        View view = inflater.inflate(R.layout.movie_item, parent, false);
+        viewHolder = new MovieViewHolder(view);
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Result result = movieResults.get(position);
-        holder.bindMovieItem(result);
+
+        switch (getItemViewType(position)){
+            case ITEM:
+                MovieViewHolder viewHolder = (MovieViewHolder) holder;
+                viewHolder.bindMovieItem(result);
+                break;
+            case LOADING:
+                // do nothing
+                break;
+        }
+//        holder.bindMovieItem(result);
     }
 
     @Override
     public int getItemCount() {
         Log.i(TAG, "Movie size is: " + movieResults.size());
         return movieResults == null? 0 : movieResults.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == movieResults.size() - 1 && isLoadingAdded) ? LOADING : ITEM;
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -144,8 +179,49 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
+    public void remove(Result result){
+        int position = movieResults.indexOf(result);
+        if (position > -1){
+            movieResults.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear(){
+        isLoadingAdded = false;
+        while (getItemCount() > 0){
+            remove(getItem(0));
+        }
+    }
+
+    public boolean isEmpty(){
+        return getItemCount() == 0;
+    }
+
     public void addLoadingFooter(){
         isLoadingAdded = true;
-//        add(new Result());
+        add(new Result());
+    }
+
+    public void removeLoadingFooter(){
+        isLoadingAdded = false;
+
+        int position = movieResults.size() - 1;
+        Result result = getItem(position);
+
+        if (result != null){
+            movieResults.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public Result getItem(int position){
+        return movieResults.get(position);
+    }
+
+    protected class LoadingViewHolder extends RecyclerView.ViewHolder{
+        public LoadingViewHolder(View view){
+            super (view);
+        }
     }
 }
