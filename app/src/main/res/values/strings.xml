@@ -13,4 +13,5 @@
     <string name="show_favourite">Show Favourite Movie</string>
     <string name="remove_from_favourite">Un-Favourite</string>
     <string name="favourites_movie">Favourite Movies</string>
+    <string name="no_internet">No Internet connection</string>
 </resources>

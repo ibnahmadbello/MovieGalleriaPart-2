@@ -41,6 +41,7 @@ public class Result implements Serializable{
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+    @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds = null;
@@ -61,7 +62,6 @@ public class Result implements Serializable{
      * No args constructor for use in serialization
      * 
      */
-    @Ignore
     public Result() {
     }
 

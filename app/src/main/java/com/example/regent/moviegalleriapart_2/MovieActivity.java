@@ -2,7 +2,10 @@ package com.example.regent.moviegalleriapart_2;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.regent.moviegalleriapart_2.model.Popular;
@@ -52,12 +57,15 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
     MovieAdapter movieAdapter;
     RecyclerView recyclerView;
     ProgressBar progressBar;
+    TextView noNetworkTextView;
+    ImageView noNetworkImageView;
 
     private List<Result> movieItems = new ArrayList<>();
 
     private MovieService movieService;
 
-    private AppDatabase mAppDatabase;
+    /*private MainViewModel mMainViewModel;
+    private AppDatabase mAppDatabase;*/
 
 
     @Override
@@ -66,6 +74,8 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
         setContentView(R.layout.activity_movie);
 
         recyclerView = findViewById(R.id.recycler_view);
+        noNetworkTextView = findViewById(R.id.no_network_text_view);
+        noNetworkImageView = findViewById(R.id.no_network_image);
 
         movieAdapter = new MovieAdapter(this, movieItems, this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -113,7 +123,23 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
 
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
-        loadFirstPage();
+
+        // Get a reference to the connectivityManager to check the state of network connectivity
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        // if there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected()){
+            loadFirstPage();
+        } else {
+            noNetworkImageView.setVisibility(View.VISIBLE);
+            noNetworkTextView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
+
+
 
         /*mAppDatabase = AppDatabase.getInstance(getApplicationContext());
         setupViewModel();*/
@@ -121,8 +147,8 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapterCall
     }
 
     /*private void setupViewModel(){
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getMovieResult().observe(this, new Observer<List<Result>>() {
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mMainViewModel.getMovieResult().observe(this, new Observer<List<Result>>() {
             @Override
             public void onChanged(@Nullable List<Result> results) {
                 Log.d(TAG, "Updating list of tasks from LiveData in ViewModel");
