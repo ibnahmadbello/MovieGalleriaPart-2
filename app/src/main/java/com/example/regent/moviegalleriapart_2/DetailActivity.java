@@ -48,7 +48,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private ImageView movieImage;
     private Toolbar mToolbar;
     private FloatingActionButton mFloatingActionButton;
-    private TextView movieReleaseDate, movieTitle, movieOverview, movieFavourite, movieReview;
+    private TextView movieReleaseDate, movieTitle, movieOverview, movieReview;
     Result result;
     private double numberRating;
     String url;
