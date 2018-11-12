@@ -2,10 +2,13 @@ package com.example.regent.moviegalleriapart_2;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -43,6 +46,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private RatingBar movieRating;
     private ImageView movieImage;
+    private Toolbar mToolbar;
+    private FloatingActionButton mFloatingActionButton;
     private TextView movieReleaseDate, movieTitle, movieOverview, movieFavourite, movieReview;
     Result result;
     private double numberRating;
@@ -60,21 +65,23 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_movie_detail);
 
         movieRating = findViewById(R.id.movie_rating);
         movieImage = findViewById(R.id.movie_picture_image_view);
         movieReleaseDate = findViewById(R.id.release_date_text_view);
         movieTitle = findViewById(R.id.movie_name_text_view);
         movieOverview = findViewById(R.id.movie_overview_text_view);
-        movieFavourite = findViewById(R.id.movie_favourite_text_view);
         movieReview = findViewById(R.id.movie_review_text_view);
         recyclerView = findViewById(R.id.video_recycler_view);
+        mToolbar = findViewById(R.id.detail_toolbar);
+        mFloatingActionButton = findViewById(R.id.fab);
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
 
-        movieFavourite.setOnClickListener(this);
+//        movieFavourite.setOnClickListener(this);
         movieReview.setOnClickListener(this);
+        mFloatingActionButton.setOnClickListener(this);
 
         result = (Result) getIntent().getSerializableExtra(MovieActivity.EXTRA);
 
@@ -90,14 +97,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void setupMovie(){
         movieOverview.setText(result.getOverview());
         movieTitle.setText(result.getTitle());
+        mToolbar.setTitle(result.getTitle());
         movieReleaseDate.setText(result.getReleaseDate());
         numberRating = result.getVoteAverage();
         Log.i(TAG, "popularity " + numberRating);
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(1);
-        movieRating.setMax(10);
-        movieRating.setNumStars(5);
+//        movieRating.setStepSize(1);
+//        movieRating.setMax(5);
+//        movieRating.setNumStars(10);
 
         Glide.with(this)
                 .load(IMAGE_BASE_URL + result.getPosterPath())
@@ -112,10 +120,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.movie_favourite_text_view:
+            /*case R.id.movie_favourite_text_view:
                 boolean initialState = movieFavourite.isSelected();
                 movieFavourite.setSelected(!initialState);
-                break;
+                break;*/
+            case R.id.fab:
+                boolean initialState = mFloatingActionButton.isSelected();
+                mFloatingActionButton.setSelected(!initialState);
             case R.id.movie_review_text_view:
                 handleReview();
                 break;
