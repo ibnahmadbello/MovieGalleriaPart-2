@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     tools:context=".DetailActivity"
+    android:layout_margin="@dimen/detail_activity_margin"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout

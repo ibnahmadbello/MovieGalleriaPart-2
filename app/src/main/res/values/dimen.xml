@@ -10,5 +10,5 @@
     <dimen name="margin_eight">8dp</dimen>
     <dimen name="margin_sixteen">16dp</dimen>
 
-    <dimen name="app_margin">200dp</dimen>
+    <dimen name="app_margin">500dp</dimen>
 </resources>
