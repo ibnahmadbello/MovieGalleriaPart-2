@@ -10,7 +10,6 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "favourites")
 public class Result implements Serializable{
 
     @SerializedName("vote_count")
@@ -41,7 +40,6 @@ public class Result implements Serializable{
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
-    @Ignore
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds = null;

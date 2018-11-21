@@ -4,8 +4,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
 import com.example.regent.moviegalleriapart_2.model.Result;
 
 import java.util.List;
@@ -15,16 +17,16 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface TaskDao {
 
-    @Query("SELECT * FROM favourites")
-    LiveData<List<Result>> loadAllFavourites();
+    @Query("SELECT * FROM favourite")
+    LiveData<List<FavouriteEntry>> loadAllFavourites();
 
-    @Insert(onConflict = REPLACE)
-    void insertFavourite(Result result);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertFavourite(FavouriteEntry favouriteEntry);
 
     @Delete
-    void deleteFavourite(Result result);
+    void deleteFavourite(FavouriteEntry favouriteEntry);
 
-    @Query("SELECT * FROM favourites WHERE id = :id")
-    LiveData<Result> loadFavouriteById(int id);
+    @Query("SELECT * FROM favourite WHERE id = :id")
+    LiveData<FavouriteEntry> loadFavouriteById(int id);
 
 }
