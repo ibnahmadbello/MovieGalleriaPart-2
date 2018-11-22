@@ -1,3 +1,4 @@
+/*
 package com.example.regent.moviegalleriapart_2.utils.viewModel;
 
 import android.app.Application;
@@ -48,3 +49,4 @@ public class MainViewModel extends AndroidViewModel {
         }
     }
 }
+*/

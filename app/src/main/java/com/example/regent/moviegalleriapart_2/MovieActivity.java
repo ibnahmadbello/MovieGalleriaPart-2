@@ -31,7 +31,6 @@ import com.example.regent.moviegalleriapart_2.utils.MovieAdapter;
 import com.example.regent.moviegalleriapart_2.utils.MovieAdapterCallback;
 import com.example.regent.moviegalleriapart_2.utils.PageScrollListener;
 import com.example.regent.moviegalleriapart_2.utils.QueryPreferences;
-import com.example.regent.moviegalleriapart_2.utils.viewModel.MainViewModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;

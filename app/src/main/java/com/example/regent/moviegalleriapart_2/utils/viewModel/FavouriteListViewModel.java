@@ -1,28 +1,29 @@
-package com.example.regent.moviegalleriapart_2.utils;
+package com.example.regent.moviegalleriapart_2.utils.viewModel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
 import android.os.AsyncTask;
 
 import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
+import com.example.regent.moviegalleriapart_2.utils.AppDatabase;
 
 import java.util.List;
 
-public class AddFavouriteViewModel extends AndroidViewModel {
+public class FavouriteListViewModel extends AndroidViewModel {
 
-//    private LiveData<List<FavouriteEntry>> mFavouriteEntryLiveData;
+
+    private LiveData<List<FavouriteEntry>> mFavouriteEntryLiveData;
     private AppDatabase mAppDatabase;
 
-    public AddFavouriteViewModel(Application application){
+    public FavouriteListViewModel(Application application){
         super(application);
 
         mAppDatabase = AppDatabase.getInstance(this.getApplication());
-//        mFavouriteEntryLiveData = mAppDatabase.mTaskDao().loadAllFavourites();
-    }
+        mFavouriteEntryLiveData = mAppDatabase.mTaskDao().loadAllFavourites();
+        }
 
-    /*public LiveData<List<FavouriteEntry>> getFavouriteEntryLiveData(){
+    public LiveData<List<FavouriteEntry>> getFavouriteEntryLiveData(){
         return mFavouriteEntryLiveData;
     }
 
@@ -42,24 +43,8 @@ public class AddFavouriteViewModel extends AndroidViewModel {
             mDatabase.mTaskDao().deleteFavourite(favouriteEntries[0]);
             return null;
         }
-    }*/
-
-    public void addFavourite(FavouriteEntry favouriteEntry){
-        new addAsyncTask(mAppDatabase).execute(favouriteEntry);
     }
 
-    private static class addAsyncTask extends AsyncTask<FavouriteEntry, Void, Void>{
-        private AppDatabase db;
 
-        addAsyncTask(AppDatabase database){
-            db = database;
-        }
-
-        @Override
-        protected Void doInBackground(FavouriteEntry... favouriteEntries) {
-            db.mTaskDao().insertFavourite(favouriteEntries[0]);
-            return null;
-        }
-    }
 
 }

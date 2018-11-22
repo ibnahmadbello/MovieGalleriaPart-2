@@ -5,19 +5,25 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.example.regent.moviegalleriapart_2.model.Result;
-import com.example.regent.moviegalleriapart_2.utils.AppDatabase;
-import com.example.regent.moviegalleriapart_2.utils.viewModel.MainViewModel;
+import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
+import com.example.regent.moviegalleriapart_2.utils.FavouriteAdapter;
+import com.example.regent.moviegalleriapart_2.utils.viewModel.FavouriteListViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FavouritesActivity extends AppCompatActivity {
+public class FavouritesActivity extends AppCompatActivity implements View.OnLongClickListener{
 
-    private AppDatabase mAppDatabase;
+    private FavouriteListViewModel viewModel;
+    private FavouriteAdapter favouriteAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +32,20 @@ public class FavouritesActivity extends AppCompatActivity {
 
         setTitle(getString(R.string.favourites_movie));
 
-        mAppDatabase = AppDatabase.getInstance(getApplicationContext());
-//        setupViewModel();
+        recyclerView = findViewById(R.id.favourite_recycler_view);
+        favouriteAdapter = new FavouriteAdapter(new ArrayList<FavouriteEntry>(), this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        recyclerView.setAdapter(favouriteAdapter);
+
+        viewModel = ViewModelProviders.of(this).get(FavouriteListViewModel.class);
+        viewModel.getFavouriteEntryLiveData().observe(FavouritesActivity.this, new Observer<List<FavouriteEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<FavouriteEntry> favouriteEntryList) {
+                favouriteAdapter.addItems(favouriteEntryList);
+            }
+        });
+
     }
 
     /*private void setupViewModel(){
@@ -52,5 +70,12 @@ public class FavouritesActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        FavouriteEntry favouriteEntry = (FavouriteEntry) view.getTag();
+        viewModel.deleteItem(favouriteEntry);
+        return true;
     }
 }

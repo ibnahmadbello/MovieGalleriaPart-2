@@ -9,7 +9,7 @@ import android.util.Log;
 import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
 import com.example.regent.moviegalleriapart_2.model.Result;
 
-@Database(entities = {FavouriteEntry.class}, version = 1)
+@Database(entities = {FavouriteEntry.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase{
 
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();

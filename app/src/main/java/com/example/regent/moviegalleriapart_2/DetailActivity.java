@@ -1,5 +1,6 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -19,11 +20,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
 import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.Review.Review;
 import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
+import com.example.regent.moviegalleriapart_2.utils.AddFavouriteViewModel;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -62,6 +65,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private MovieService movieService;
 
+    private AddFavouriteViewModel mAddFavouriteViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +83,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         mFloatingActionButton = findViewById(R.id.fab);
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
+        mAddFavouriteViewModel = ViewModelProviders.of(this).get(AddFavouriteViewModel.class);
 
 //        movieFavourite.setOnClickListener(this);
         movieReview.setOnClickListener(this);
@@ -127,6 +133,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.fab:
                 boolean initialState = mFloatingActionButton.isSelected();
                 mFloatingActionButton.setSelected(!initialState);
+                mAddFavouriteViewModel.addFavourite(new FavouriteEntry(result.getId(), result.getTitle(), result.getOverview(), result.getPosterPath()));
             case R.id.movie_review_text_view:
                 handleReview();
                 break;
@@ -158,12 +165,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
      */
     private Call<Review> callMovieReview(){
         int movie_id = result.getId();
-        return movieService.getReview(movie_id, getString(R.string.api_key), "en_US", 1);
+        return movieService.getReview(movie_id, getString(R.string.api_key), "en_US");
     }
 
     private List<com.example.regent.moviegalleriapart_2.model.Review.Result> fetchResults(Response<Review> reviewResponse){
         Review review = reviewResponse.body();
 //        Log.i(TAG, review.getResults().toString());
+        assert review != null;
         return review.getResults();
     }
 
@@ -171,11 +179,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         for (com.example.regent.moviegalleriapart_2.model.Review.Result result : mResultList){
             url = result.getUrl();
         }
-        Log.i(TAG, url);
-        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, ReviewActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-        startActivity(intent);
+        if (url != null) {
+            Log.i(TAG, url);
+            Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, ReviewActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, url);
+            startActivity(intent);
+        } else {
+            return;
+        }
     }
 
     private void handleVideoView(){

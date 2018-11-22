@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -56,28 +57,15 @@ public class ReviewActivity extends AppCompatActivity {
 
     private void initWebView(){
         progressBar.setMax(100);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100){
-                    progressBar.setVisibility(View.GONE);
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    progressBar.setProgress(newProgress);
-                }
-            }
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-            }
-        });
+//        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new MyWebChromeClient(this));
 
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+                Log.d(TAG, url);
+                webView.loadUrl(url);
+                return true;
             }
         });
     }
@@ -162,7 +150,7 @@ public class ReviewActivity extends AppCompatActivity {
         if (webView.canGoForward()){
             webView.goForward();
         }
-    }
+    }*/
 
     private class MyWebChromeClient extends WebChromeClient{
         Context context;
@@ -171,6 +159,6 @@ public class ReviewActivity extends AppCompatActivity {
             super();
             this.context = context;
         }
-    }*/
+    }
 
 }

@@ -30,8 +30,8 @@ public interface MovieService {
     Call<Review> getReview(
             @Path("movie_id") int movie_id,
             @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("page") int pageIndex
+            @Query("language") String language
+//            @Query("page") int pageIndex
     );
 
     @GET("movie/{movie_id}/videos")
