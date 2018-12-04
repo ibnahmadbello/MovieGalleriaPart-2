@@ -7,9 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
@@ -58,19 +55,7 @@ public class FavouritesActivity extends AppCompatActivity implements View.OnLong
         });
     }*/
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.favourite, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_remove_from_favourite){
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public boolean onLongClick(View view) {

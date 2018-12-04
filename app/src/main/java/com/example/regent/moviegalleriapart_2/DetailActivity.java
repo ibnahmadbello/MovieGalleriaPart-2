@@ -27,6 +27,7 @@ import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
 import com.example.regent.moviegalleriapart_2.utils.AddFavouriteViewModel;
+import com.example.regent.moviegalleriapart_2.utils.FavouritePreference;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -67,6 +68,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private MovieService movieService;
 
     private AddFavouriteViewModel mAddFavouriteViewModel;
+    private boolean mInitialState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 //        movieRating.setStepSize(1);
 //        movieRating.setMax(5);
 //        movieRating.setNumStars(10);
+        if (FavouritePreference.getPrefFavouriteQuery(this)==(result.getId())){
+            mFloatingActionButton.setSelected(!mInitialState);
+        }
 
         Glide.with(this)
                 .load(IMAGE_BASE_URL + result.getPosterPath())
@@ -132,10 +137,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 movieFavourite.setSelected(!initialState);
                 break;*/
             case R.id.fab:
-                boolean initialState = mFloatingActionButton.isSelected();
-                mFloatingActionButton.setSelected(!initialState);
+                mInitialState = mFloatingActionButton.isSelected();
+                mFloatingActionButton.setSelected(!mInitialState);
                 mAddFavouriteViewModel.addFavourite(new FavouriteEntry(result.getId(), result.getTitle(), result.getOverview(), result.getPosterPath()));
-
+                FavouritePreference.setPrefFavouriteQuery(this, result.getId());
             case R.id.movie_review_text_view:
                 handleReview();
                 break;
