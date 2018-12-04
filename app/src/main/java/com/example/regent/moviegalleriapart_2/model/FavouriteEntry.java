@@ -1,7 +1,7 @@
 package com.example.regent.moviegalleriapart_2.model;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "favourite")
@@ -51,7 +51,6 @@ public class FavouriteEntry {
     public void setMoviePosterPath(String moviePosterPath) {
         this.moviePosterPath = moviePosterPath;
     }
-
 
 
 }

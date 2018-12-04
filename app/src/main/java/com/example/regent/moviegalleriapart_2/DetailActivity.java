@@ -32,6 +32,7 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +135,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 boolean initialState = mFloatingActionButton.isSelected();
                 mFloatingActionButton.setSelected(!initialState);
                 mAddFavouriteViewModel.addFavourite(new FavouriteEntry(result.getId(), result.getTitle(), result.getOverview(), result.getPosterPath()));
+
             case R.id.movie_review_text_view:
                 handleReview();
                 break;

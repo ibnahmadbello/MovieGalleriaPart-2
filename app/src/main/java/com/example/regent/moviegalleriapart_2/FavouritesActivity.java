@@ -33,7 +33,7 @@ public class FavouritesActivity extends AppCompatActivity implements View.OnLong
         setTitle(getString(R.string.favourites_movie));
 
         recyclerView = findViewById(R.id.favourite_recycler_view);
-        favouriteAdapter = new FavouriteAdapter(new ArrayList<FavouriteEntry>(), this);
+        favouriteAdapter = new FavouriteAdapter(this, new ArrayList<FavouriteEntry>(), this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         recyclerView.setAdapter(favouriteAdapter);
