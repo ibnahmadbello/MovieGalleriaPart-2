@@ -23,7 +23,8 @@
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:parentActivityName=".MovieActivity" />
+            android:parentActivityName=".MovieActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ReviewActivity"
             android:parentActivityName=".DetailActivity"/>
         <activity android:name=".FavouritesActivity"

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -112,7 +113,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "popularity " + numberRating);
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-//        movieRating.setStepSize(1);
+        movieRating.setStepSize(2);
 //        movieRating.setMax(5);
 //        movieRating.setNumStars(10);
         if (FavouritePreference.getPrefFavouriteQuery(this)==(result.getId())){
@@ -243,5 +244,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(webIntent);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.homeAsUp)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 }
