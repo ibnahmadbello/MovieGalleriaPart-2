@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,17 +34,11 @@ public class ReviewActivity extends AppCompatActivity {
     private String url;
     private WebView webView;
     private ProgressBar progressBar;
-    private float m_downX;
-    CoordinatorLayout coordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
 
         url = getIntent().getStringExtra(Intent.EXTRA_TEXT);
 
@@ -54,7 +49,6 @@ public class ReviewActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.webView);
         progressBar = findViewById(R.id.progressBar);
-        coordinatorLayout = findViewById(R.id.main_content);
 
         initWebView();
 
@@ -62,72 +56,21 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void initWebView(){
+        progressBar.setMax(100);
+//        webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new MyWebChromeClient(this));
+
         webView.setWebViewClient(new WebViewClient(){
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                progressBar.setVisibility(View.VISIBLE);
-                invalidateOptionsMenu();
-            }
-
-            @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.d(TAG, url);
                 webView.loadUrl(url);
                 return true;
             }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                progressBar.setVisibility(View.GONE);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                progressBar.setVisibility(View.GONE);
-                invalidateOptionsMenu();
-            }
-
-
         });
-
-        webView.clearCache(true);
-        webView.clearHistory();
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setInitialScale(1);
-        webView.setHorizontalScrollBarEnabled(true);
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getPointerCount() > 1){
-                    // Multi touch detected
-                    return true;
-                }
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:{
-                        // save the x
-                        m_downX = event.getX();
-                    }
-                    break;
-                    case MotionEvent.ACTION_MOVE:
-                    case MotionEvent.ACTION_CANCEL:
-                    case MotionEvent.ACTION_UP:{
-                        // set x so that it doesn't move
-                        event.setLocation(m_downX, event.getY());
-                    }
-                    break;
-                }
-                return false;
-            }
-
-        });
-
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.browser, menu);
@@ -207,7 +150,7 @@ public class ReviewActivity extends AppCompatActivity {
         if (webView.canGoForward()){
             webView.goForward();
         }
-    }
+    }*/
 
     private class MyWebChromeClient extends WebChromeClient{
         Context context;

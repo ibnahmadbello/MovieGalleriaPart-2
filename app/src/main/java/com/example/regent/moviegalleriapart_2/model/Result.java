@@ -1,6 +1,10 @@
 
 package com.example.regent.moviegalleriapart_2.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
@@ -11,6 +15,7 @@ public class Result implements Serializable{
     @SerializedName("vote_count")
     @Expose
     private int voteCount;
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private int id;

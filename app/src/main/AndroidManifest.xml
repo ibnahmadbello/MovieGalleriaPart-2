@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.regent.moviegalleriapart_2">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,12 +17,18 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".DetailActivity"
-            android:parentActivityName=".MovieActivity" />
-        <activity android:name=".ReviewActivity"></activity>
+            android:parentActivityName=".MovieActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ReviewActivity"
+            android:parentActivityName=".DetailActivity"/>
+        <activity android:name=".FavouritesActivity"
+            android:parentActivityName=".MovieActivity"/>
     </application>
 
 </manifest>

@@ -1,12 +1,17 @@
 package com.example.regent.moviegalleriapart_2;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,16 +21,20 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.regent.moviegalleriapart_2.model.FavouriteEntry;
 import com.example.regent.moviegalleriapart_2.model.Result;
 import com.example.regent.moviegalleriapart_2.model.Review.Review;
 import com.example.regent.moviegalleriapart_2.model.Video.Video;
 import com.example.regent.moviegalleriapart_2.presenter.MovieApi;
 import com.example.regent.moviegalleriapart_2.presenter.MovieService;
+import com.example.regent.moviegalleriapart_2.utils.AddFavouriteViewModel;
+import com.example.regent.moviegalleriapart_2.utils.FavouritePreference;
 import com.example.regent.moviegalleriapart_2.utils.VideoAdapter;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +52,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private RatingBar movieRating;
     private ImageView movieImage;
-    private TextView movieReleaseDate, movieTitle, movieOverview, movieFavourite, movieReview;
+    private Toolbar mToolbar;
+    private FloatingActionButton mFloatingActionButton;
+    private TextView movieReleaseDate, movieTitle, movieOverview, movieReview;
     Result result;
     private double numberRating;
     String url;
@@ -57,24 +68,30 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
 
     private MovieService movieService;
 
+    private AddFavouriteViewModel mAddFavouriteViewModel;
+    private boolean mInitialState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_movie_detail);
 
         movieRating = findViewById(R.id.movie_rating);
         movieImage = findViewById(R.id.movie_picture_image_view);
         movieReleaseDate = findViewById(R.id.release_date_text_view);
         movieTitle = findViewById(R.id.movie_name_text_view);
         movieOverview = findViewById(R.id.movie_overview_text_view);
-        movieFavourite = findViewById(R.id.movie_favourite_text_view);
         movieReview = findViewById(R.id.movie_review_text_view);
         recyclerView = findViewById(R.id.video_recycler_view);
+        mToolbar = findViewById(R.id.detail_toolbar);
+        mFloatingActionButton = findViewById(R.id.fab);
 
         movieService = MovieApi.getRetrofit(this).create(MovieService.class);
+        mAddFavouriteViewModel = ViewModelProviders.of(this).get(AddFavouriteViewModel.class);
 
-        movieFavourite.setOnClickListener(this);
+//        movieFavourite.setOnClickListener(this);
         movieReview.setOnClickListener(this);
+        mFloatingActionButton.setOnClickListener(this);
 
         result = (Result) getIntent().getSerializableExtra(MovieActivity.EXTRA);
 
@@ -90,19 +107,22 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private void setupMovie(){
         movieOverview.setText(result.getOverview());
         movieTitle.setText(result.getTitle());
+        mToolbar.setTitle(result.getTitle());
         movieReleaseDate.setText(result.getReleaseDate());
         numberRating = result.getVoteAverage();
         Log.i(TAG, "popularity " + numberRating);
         movieRating.setRating((float) numberRating);
         movieRating.setIsIndicator(true);
-        movieRating.setStepSize(1);
-        movieRating.setMax(10);
-        movieRating.setNumStars(5);
+        movieRating.setStepSize(2);
+//        movieRating.setMax(5);
+//        movieRating.setNumStars(10);
+        if (FavouritePreference.getPrefFavouriteQuery(this)==(result.getId())){
+            mFloatingActionButton.setSelected(!mInitialState);
+        }
 
         Glide.with(this)
                 .load(IMAGE_BASE_URL + result.getPosterPath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .centerCrop()
                 .crossFade()
                 .override(500, 500)
                 .into(movieImage);
@@ -113,8 +133,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.movie_favourite_text_view:
-                break;
+            /*case R.id.movie_favourite_text_view:
+                boolean initialState = movieFavourite.isSelected();
+                movieFavourite.setSelected(!initialState);
+                break;*/
+            case R.id.fab:
+                mInitialState = mFloatingActionButton.isSelected();
+                mFloatingActionButton.setSelected(!mInitialState);
+                mAddFavouriteViewModel.addFavourite(new FavouriteEntry(result.getId(), result.getTitle(), result.getOverview(), result.getPosterPath()));
+                FavouritePreference.setPrefFavouriteQuery(this, result.getId());
             case R.id.movie_review_text_view:
                 handleReview();
                 break;
@@ -146,12 +173,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
      */
     private Call<Review> callMovieReview(){
         int movie_id = result.getId();
-        return movieService.getReview(movie_id, getString(R.string.api_key), "en_US", 1);
+        return movieService.getReview(movie_id, getString(R.string.api_key), "en_US");
     }
 
     private List<com.example.regent.moviegalleriapart_2.model.Review.Result> fetchResults(Response<Review> reviewResponse){
         Review review = reviewResponse.body();
 //        Log.i(TAG, review.getResults().toString());
+        assert review != null;
         return review.getResults();
     }
 
@@ -159,11 +187,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         for (com.example.regent.moviegalleriapart_2.model.Review.Result result : mResultList){
             url = result.getUrl();
         }
-        Log.i(TAG, url);
-        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, ReviewActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-        startActivity(intent);
+        if (url != null) {
+            Log.i(TAG, url);
+            Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, ReviewActivity.class);
+            intent.putExtra(Intent.EXTRA_TEXT, url);
+            startActivity(intent);
+        } else {
+            return;
+        }
     }
 
     private void handleVideoView(){
@@ -212,5 +244,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             startActivity(webIntent);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.homeAsUp)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 }
