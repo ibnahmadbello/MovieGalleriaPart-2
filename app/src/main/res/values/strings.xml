@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MovieGalleria</string>
 
-    <string name="api_key">e8ee808272e37253ce9bcafad5189dd0</string>
+    <string name="api_key">API_KEY</string>
     <string name="movie_image">Movie Image</string>
     <string name="add_to_favourite">Add to Favourite</string>
     <string name="review_link">Click on this link to read Movie Review</string>
