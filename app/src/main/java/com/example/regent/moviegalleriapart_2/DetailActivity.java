@@ -58,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     Result result;
     private double numberRating;
     String url;
-    private static final String API_KEY = "AIzaSyD3PQDsgq6CicCEfMV59RjEJgMOxnZyQ4o";
+    private static final String API_KEY = "";
 
     List<com.example.regent.moviegalleriapart_2.model.Review.Result> mResultList = new ArrayList<>();
 
